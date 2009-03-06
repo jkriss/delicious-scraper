@@ -11,7 +11,7 @@ outfile = ARGV[1]
 
 doc = Hpricot.XML(open(feed))
 
-out = File.new(outfile,"w+")
+out = File.new(outfile,"a")
 
 (doc/:item).each do |item|
   b = {}
@@ -21,11 +21,18 @@ out = File.new(outfile,"w+")
   b[:creator] = /<!\[CDATA\[(.*)\]\]>/.match((item/'dc:creator').inner_html)[1]
   
   b[:tags] = []
-  (item/:category).each { |cat| b[:tags] << cat.inner_html }  
+  (item/:category).each { |cat| b[:tags] << cat.inner_html }
   
-  out.puts [Time.local(*b[:date]).strftime("%Y/%d/%m %H:%M:%S"), b[:title], b[:link], b[:creator], b[:tags].join(' ')].join("\t")
+  # puts b.inspect  
+  
+  line = [Time.local(*b[:date]).strftime("%Y/%m/%d %H:%M:%S"), b[:title], b[:link], b[:creator], b[:tags].join(' ')].join("\t")
+  # puts line
+  out.puts line
 end
+
+out.close
 
 `cp #{outfile} #{outfile}.tmp`
 `sort #{outfile}.tmp | uniq > #{outfile}`
 `rm #{outfile}.tmp`
+
