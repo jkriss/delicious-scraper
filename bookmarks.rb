@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
 
+# usage: ./bookmarks.rb http://feeds.delicious.com/v2/rss/tag/the-tag-in-question?count=100 the-tag-in-question.txt
+
 require 'rubygems'
 require 'hpricot'
 require 'open-uri'
